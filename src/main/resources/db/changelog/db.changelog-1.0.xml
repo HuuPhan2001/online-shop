@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- TABLE: category type -->
+    <changeSet id="create-category-type" author="MTTTT" runOnChange="true">
+        <createTable tableName="category_type">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)"/>
+            <column name="code" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="category_type" columnName="id" incrementBy="1"/>
+        <createIndex indexName="index_category_type" tableName="category_type">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: category -->
+    <changeSet id="create-category" author="MTTTT" runOnChange="true">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="category_type_id" type="BIGINT"/>
+            <column name="name" type="VARCHAR(255)" defaultOnNull="false"/>
+            <column name="code" type="VARCHAR(255)" />
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="parent" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="category" columnName="id"/>
+        <addForeignKeyConstraint constraintName="fk_category_type"
+                                 baseTableName="category" baseColumnNames="category_type_id"
+                                 referencedTableName="category_type" referencedColumnNames="id"/>
+        <createIndex indexName="index_category" tableName="category">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: user -->
+    <changeSet id="create-user" author="MTTTT" runOnChange="true">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="avatar" type="LONGTEXT"/>
+            <column name="phone" type="VARCHAR(11)"/>
+            <column name="identification_number" type="VARCHAR(20)"/>
+            <column name="forgot_password_token" type="VARCHAR(255)"/>
+            <column name="forgot_password" type="BOOLEAN"/>
+            <column name="remember_password" type="BOOLEAN"/>
+            <column name="gender" type="BOOLEAN"/>
+            <column name="salt" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="role_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="users" columnName="id"/>
+        <createIndex indexName="index_user" tableName="users">
+            <column name="username"/>
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: cart -->
+    <changeSet id="create-cart" author="MTTTT" runOnChange="true">
+        <createTable tableName="cart">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="cart" columnName="id" />
+        <addForeignKeyConstraint baseTableName="cart" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_cart_user"/>
+    </changeSet>
+
+    <!-- TABLE: product -->
+    <changeSet id="create-product" author="MTTTT" runOnChange="true">
+        <createTable tableName="product">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="slug" type="VARCHAR(255)"/>
+            <column name="avatar" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+            <column name="price" type="double"/>
+            <column name="quantity" type="INT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="product" columnName="id" />
+        <createIndex indexName="index_product" tableName="product">
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: cart_item -->
+    <changeSet id="create-cart-item" author="MTTTT" runOnChange="true">
+        <createTable tableName="cart_item">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cart_id" type="BIGINT"/>
+            <column name="product_id" type="BIGINT"/>
+            <column name="quantity" type="INT"/>
+            <column name="note" type="TEXT"/>
+            <column name="unit_price" type="double"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="cart_item" columnName="id" />
+        <addForeignKeyConstraint baseTableName="cart_item" baseColumnNames="cart_id"
+                                 referencedTableName="cart" referencedColumnNames="id"
+                                 constraintName="fk_cart_item_cart"/>
+        <addForeignKeyConstraint baseTableName="cart_item" baseColumnNames="product_id"
+                                 referencedTableName="product" referencedColumnNames="id"
+                                 constraintName="fk_cart_item_product"/>
+    </changeSet>
+
+    <!-- TABLE: order -->
+    <changeSet id="create-order" author="MTTTT" runOnChange="true">
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="order_total" type="INT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="payment_status" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="district" type="VARCHAR(255)"/>
+            <column name="ward" type="VARCHAR(255)"/>
+            <column name="phone_receiver" type="VARCHAR(255)"/>
+            <column name="name_receiver" type="VARCHAR(255)"/>
+            <column name="ship_cost" type="double"/>
+            <column name="payment_method_id" type="BIGINT"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="province" type="VARCHAR(255)"/>
+            <column name="order_code" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discount" type="INT"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="orders" columnName="id" />
+        <addForeignKeyConstraint baseTableName="orders" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_orders_users"/>
+        <addForeignKeyConstraint baseTableName="orders" baseColumnNames="payment_method_id"
+                                 referencedTableName="category" referencedColumnNames="id"
+                                 constraintName="fk_orders_category"/>
+        <createIndex indexName="index_order" tableName="orders">
+            <column name="order_code"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: order_detail -->
+    <changeSet id="create-order-detail" author="MTTTT" runOnChange="true">
+        <createTable tableName="order_detail">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT"/>
+            <column name="product_id" type="BIGINT"/>
+            <column name="quantity" type="INT"/>
+            <column name="unit_price" type="double"/>
+            <column name="note" type="TEXT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="update_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="is_feedback" type="BIGINT" defaultValueNumeric="0"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="order_detail" columnName="id" />
+        <addForeignKeyConstraint baseTableName="order_detail" baseColumnNames="product_id"
+                                 referencedTableName="product" referencedColumnNames="id"
+                                 constraintName="fk_order_detail_product"/>
+        <addForeignKeyConstraint baseTableName="order_detail" baseColumnNames="order_id"
+                                 referencedTableName="orders" referencedColumnNames="id"
+                                 constraintName="fk_order_detail_order"/>
+    </changeSet>
+
+    <!-- TABLE: wishlist -->
+    <changeSet id="create-wishlist" author="MTTTT" runOnChange="true">
+        <createTable tableName="wishlist">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="wishlist" columnName="id" />
+        <addForeignKeyConstraint baseTableName="wishlist" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_wishlist_users"/>
+        <createIndex indexName="index_wishlist" tableName="wishlist">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: wishlist_item -->
+    <changeSet id="create-wishlist-item" author="MTTTT" runOnChange="true">
+        <createTable tableName="wishlist_item">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="wishlist_id" type="BIGINT"/>
+            <column name="product_id" type="BIGINT"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="wishlist_item" columnName="id" />
+        <addForeignKeyConstraint baseTableName="wishlist_item" baseColumnNames="wishlist_id"
+                                 referencedTableName="wishlist" referencedColumnNames="id"
+                                 constraintName="fk_wishlist_item_wishlist"/>
+        <addForeignKeyConstraint baseTableName="wishlist_item" baseColumnNames="product_id"
+                                 referencedTableName="product" referencedColumnNames="id"
+                                 constraintName="fk_wishlist_item_product"/>
+    </changeSet>
+    
+    <!-- TABLE: voucher -->
+    <changeSet id="create-voucher" author="MTTTT" runOnChange="true">
+        <createTable tableName="voucher">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="discount_amount" type="BIGINT"/>
+            <column name="min_order_amount" type="BIGINT"/>
+            <column name="start_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT"/>
+            <column name="product_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="voucher" columnName="id" />
+        <addForeignKeyConstraint baseTableName="voucher" baseColumnNames="product_id"
+                                 referencedTableName="product" referencedColumnNames="id"
+                                 constraintName="fk_voucher_product"/>
+        <createIndex indexName="index_voucher" tableName="voucher">
+            <column name="code"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: shop_transaction -->
+    <changeSet id="create-shop-transaction" author="MTTTT" runOnChange="true">
+        <createTable tableName="shop_transaction">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+            <column name="order_id" type="BIGINT"/>
+            <column name="quantity" type="INT"/>
+            <column name="type" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="amount" type="double"/>
+            <column name="description" type="TEXT"/>
+            <column name="create_by" type="BIGINT" />
+            <column name="update_by" type="BIGINT" />
+        </createTable>
+        <addAutoIncrement tableName="shop_transaction" columnName="id" />
+        <createIndex indexName="index_shop_transaction" tableName="shop_transaction">
+            <column name="user_id"/>
+            <column name="order_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- TABLE: payment -->
+<!--    <changeSet id="create-payment" author="MTTTT" runOnChange="true">-->
+<!--        <createTable tableName="payment">-->
+<!--            <column name="id" type="BIGINT">-->
+<!--                <constraints primaryKey="true" nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="payment_method_id" type="BIGINT"/>-->
+<!--            <column name="status" type="VARCHAR(255)"/>-->
+<!--            <column name="amount" type="BIGINT"/>-->
+<!--            <column name="order_id" type="BIGINT"/>-->
+<!--            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>-->
+<!--            <column name="update_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>-->
+<!--        </createTable>-->
+<!--        <addAutoIncrement tableName="payment" columnName="id" />-->
+<!--    </changeSet>-->
+
+    <!-- TABLE: payment_method -->
+<!--    <changeSet id="create-payment-method" author="MTTTT" runOnChange="true">-->
+<!--        <createTable tableName="payment_method">-->
+<!--            <column name="id" type="BIGINT">-->
+<!--                <constraints primaryKey="true" nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="payment_method_name" type="VARCHAR(255)"/>-->
+<!--            <column name="status" type="VARCHAR(255)"/>-->
+<!--            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>-->
+<!--            <column name="update_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>-->
+<!--        </createTable>-->
+<!--        <addAutoIncrement tableName="payment_method" columnName="id" />-->
+<!--    </changeSet>-->
+</databaseChangeLog>

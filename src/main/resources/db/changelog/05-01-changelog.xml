@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1746429436520-28" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="users">
+            <column name="identify" type="VARCHAR(20)"/>
+            <column name="token" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-29" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="wishlist">
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="update_at" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-30" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="wishlist_item">
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="update_at" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-34" author="MTTTT">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" schemaName="online_shop"
+                             tableName="users"/>
+    </changeSet>
+    <changeSet id="1746429436520-35" author="MTTTT">
+        <addUniqueConstraint columnNames="username" constraintName="uc_users_username" schemaName="online_shop"
+                             tableName="users"/>
+    </changeSet>
+    <changeSet id="1746429436520-36" author="MTTTT">
+        <addForeignKeyConstraint baseColumnNames="parent" baseTableName="category" baseTableSchemaName="online_shop"
+                                 constraintName="FK_CATEGORY_ON_PARENT" referencedColumnNames="id"
+                                 referencedTableName="category" referencedTableSchemaName="online_shop"/>
+    </changeSet>
+    <changeSet id="1746429436520-37" author="MTTTT">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="users" baseTableSchemaName="online_shop"
+                                 constraintName="FK_USERS_ON_ROLE" referencedColumnNames="id"
+                                 referencedTableName="category" referencedTableSchemaName="online_shop"/>
+    </changeSet>
+    <changeSet id="1746429436520-49" author="MTTTT">
+        <dropColumn columnName="identification_number" schemaName="online_shop" tableName="users"/>
+    </changeSet>
+    <changeSet id="1746429436520-50" author="MTTTT">
+        <dropColumn columnName="updated_at" schemaName="online_shop" tableName="wishlist"/>
+    </changeSet>
+    <changeSet id="1746429436520-51" author="MTTTT">
+        <dropColumn columnName="updated_at" schemaName="online_shop" tableName="wishlist_item"/>
+    </changeSet>
+    <changeSet id="1746429436520-1" author="MTTTT">
+        <modifyDataType columnName="avatar" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="product"/>
+    </changeSet>
+    <changeSet id="1746429436520-2" author="MTTTT">
+        <modifyDataType columnName="avatar" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="users"/>
+    </changeSet>
+    <changeSet id="1746429436520-3" author="MTTTT">
+        <modifyDataType columnName="code" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-4" author="MTTTT">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="code" schemaName="online_shop"
+                               tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-5" author="MTTTT">
+        <modifyDataType columnName="description" newDataType="VARCHAR(255)" schemaName="online_shop"
+                        tableName="product"/>
+    </changeSet>
+    <changeSet id="1746429436520-6" author="MTTTT">
+        <modifyDataType columnName="description" newDataType="VARCHAR(255)" schemaName="online_shop"
+                        tableName="shop_transaction"/>
+    </changeSet>
+    <changeSet id="1746429436520-7" author="MTTTT">
+        <modifyDataType columnName="description" newDataType="VARCHAR(255)" schemaName="online_shop"
+                        tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-8" author="MTTTT">
+        <dropColumn columnName="discount_amount" schemaName="online_shop" tableName="voucher"/>
+
+        <dropColumn columnName="min_order_amount" schemaName="online_shop" tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-9" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="voucher">
+            <column name="discount_amount" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-10" author="MTTTT">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="email" schemaName="online_shop"
+                              tableName="users" validate="true"/>
+    </changeSet>
+    <changeSet id="1746429436520-11" author="MTTTT">
+        <dropNotNullConstraint columnDataType="datetime" columnName="end_date" schemaName="online_shop"
+                               tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-12" author="MTTTT">
+        <modifyDataType columnName="full_name" newDataType="VARCHAR(100)" schemaName="online_shop" tableName="users"/>
+    </changeSet>
+    <changeSet id="1746429436520-13" author="MTTTT">
+        <dropColumn columnName="is_feedback" schemaName="online_shop" tableName="order_detail"/>
+    </changeSet>
+    <changeSet id="1746429436520-14" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="order_detail">
+            <column name="is_feedback" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-16" author="MTTTT">
+        <addColumn schemaName="online_shop" tableName="voucher">
+            <column name="min_order_amount" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1746429436520-17" author="MTTTT">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="name" schemaName="online_shop"
+                              tableName="category" validate="true"/>
+    </changeSet>
+    <changeSet id="1746429436520-18" author="MTTTT">
+        <modifyDataType columnName="note" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="cart_item"/>
+    </changeSet>
+    <changeSet id="1746429436520-19" author="MTTTT">
+        <modifyDataType columnName="note" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="order_detail"/>
+    </changeSet>
+    <changeSet id="1746429436520-20" author="MTTTT">
+        <modifyDataType columnName="order_code" newDataType="VARCHAR(255)" schemaName="online_shop" tableName="orders"/>
+    </changeSet>
+    <changeSet id="1746429436520-21" author="MTTTT">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="order_code" schemaName="online_shop"
+                               tableName="orders"/>
+    </changeSet>
+    <changeSet id="1746429436520-22" author="MTTTT">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="password" schemaName="online_shop"
+                              tableName="users" validate="true"/>
+    </changeSet>
+    <changeSet id="1746429436520-24" author="MTTTT">
+        <dropNotNullConstraint columnDataType="datetime" columnName="start_date" schemaName="online_shop"
+                               tableName="voucher"/>
+    </changeSet>
+    <changeSet id="1746429436520-25" author="MTTTT">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="username" schemaName="online_shop"
+                              tableName="users" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
