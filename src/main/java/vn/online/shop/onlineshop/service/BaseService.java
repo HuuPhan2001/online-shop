@@ -48,7 +48,7 @@ public abstract class BaseService<T extends BaseModel> implements IService<T> {
     }
 
     @Override
-    public T findByIdAndStatus(Long id, StatusEnum status) {
+    public Optional<T> findByIdAndStatus(Long id, StatusEnum status) {
         return getRepository().findByIdAndStatus(id, status);
     }
 

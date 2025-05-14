@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vn.online.shop.onlineshop.common.config.BusinessCommon;
 import vn.online.shop.onlineshop.common.config.JwtService;
 import vn.online.shop.onlineshop.service.AuthenticationService;
 import vn.online.shop.onlineshop.service.dto.AuthRequest;
@@ -35,5 +36,10 @@ public class AuthenController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
         return new ResponseEntity<>(authenticationService.register(registerRequest), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(){
+        return new ResponseEntity<>(authenticationService.logout(BusinessCommon.getUser().getToken()), HttpStatus.OK);
     }
 }

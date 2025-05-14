@@ -6,14 +6,13 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.util.bcel.Const;
 import vn.online.shop.onlineshop.common.config.Constant;
 import vn.online.shop.onlineshop.common.config.StatusEnum;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryCreateDto {
+public class CategoryRequestDto {
     private Long id;
 
     private StatusEnum status;
@@ -37,6 +36,6 @@ public class CategoryCreateDto {
     @NotBlank(message = Constant.EMPTY_FIELD)
     private Long categoryTypeId;
 
-    private boolean isDefault;
+    private boolean isDefault = false;
 
 }

@@ -17,13 +17,9 @@ public class UserDto implements Serializable {
     @JsonIgnore
     private Long id;
     private StatusEnum status;
-
     @NotBlank(message = Constant.EMPTY_FIELD)
     private String username;
-
     private String email;
-    @JsonIgnore
-    private String password;
     private String fullName;
     private String phone;
     private String identify;
@@ -31,6 +27,7 @@ public class UserDto implements Serializable {
     private String salt;
     private String token;
     private Long roleId;
+    private String roleName;
     private boolean forgotPassword;
     private boolean rememberPassword;
 }

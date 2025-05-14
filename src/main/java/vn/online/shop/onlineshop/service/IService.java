@@ -18,7 +18,7 @@ public interface IService<T extends BaseModel>  {
 
     Optional<T> findById(Long id);
 
-    T findByIdAndStatus(Long id, StatusEnum status);
+    Optional<T> findByIdAndStatus(Long id, StatusEnum status);
 
     List<T> findAll();
 

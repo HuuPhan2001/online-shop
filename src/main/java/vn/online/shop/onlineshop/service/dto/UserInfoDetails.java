@@ -1,5 +1,7 @@
 package vn.online.shop.onlineshop.service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,18 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Data
+@AllArgsConstructor
 public class UserInfoDetails implements UserDetails {
-    private String username;
-    private String password;
     private List<GrantedAuthority> authorities;
-
-    public UserInfoDetails(User user) {
-        this.username = user.getEmail(); // Use email as username
-        this.password = user.getPassword();
-        this.authorities = Stream.of(user.getRole().getName().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
+    private User userInfo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,12 +25,12 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return userInfo.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return userInfo.getUsername();
     }
 
 }

@@ -12,13 +12,6 @@ import vn.online.shop.onlineshop.common.config.StatusEnum;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponse {
-    private String username;
-    private String email;
-    private String fullName;
-    private String phone;
-    private String identify;
-    private String address;
-    private String salt;
-    private String roleName;
-    private String token;
+    private Token tokenInfo;
+    private UserResponse userResponse;
 }

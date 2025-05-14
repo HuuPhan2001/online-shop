@@ -19,10 +19,7 @@ import vn.online.shop.onlineshop.entity.Category;
 import vn.online.shop.onlineshop.entity.User;
 import vn.online.shop.onlineshop.exception.RestExceptionHandler;
 import vn.online.shop.onlineshop.repository.IUserRepository;
-import vn.online.shop.onlineshop.service.dto.AuthRequest;
-import vn.online.shop.onlineshop.service.dto.AuthResponse;
-import vn.online.shop.onlineshop.service.dto.RegisterRequest;
-import vn.online.shop.onlineshop.service.dto.UserInfoDetails;
+import vn.online.shop.onlineshop.service.dto.*;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -33,7 +30,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationService implements UserDetailsService {
+public class AuthenticationService{
 
     private final IUserRepository userRepository;
 
@@ -47,32 +44,18 @@ public class AuthenticationService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(Constant.NOT_FOUND_USER));
-
-        String role = Optional.ofNullable(user.getRole()).map(Category::getCode).orElse("USER");
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-    }
-
     public AuthResponse login(AuthRequest authRequest) {
         authenticate(authRequest.getUsername(), authRequest.getPassword());
-
-        UserDetails userDetails = loadUserByUsername(authRequest.getUsername());
-        String jwt = jwtService.generateToken(userDetails);
 
         User user = userRepository.findByUsername(authRequest.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(Constant.NOT_FOUND_USER));
 
-        user.setToken(jwt);
-        user = userRepository.save(user);
+        Token tokenInfo = jwtService.generateToken(authRequest.getUsername());
+        AuthResponse authResponse = new AuthResponse(tokenInfo, userMapper.toResponse(user));
+        user.setToken(tokenInfo.getAccessToken());
+        userRepository.save(user);
 
-        return userMapper.toAuthResponse(user);
+        return authResponse;
     }
 
     private void authenticate(String username, String password) {
@@ -85,11 +68,15 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     public AuthResponse register(RegisterRequest registerRequest) {
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            throw new IllegalArgumentException("Tên đăng nhập đã tồn tại");
+        if (userRepository.existsByUsernameOrEmail(registerRequest.getUsername(), registerRequest.getEmail())) {
+            throw new RestExceptionHandler("Tên đăng nhập đã tồn tại");
         }
-
-        String rawPassword = generateRandomPassword();
+        String rawPassword;
+        if(registerRequest.getPassword().isBlank()){
+            rawPassword = registerRequest.getPassword();
+        } else {
+            rawPassword = Constant.DEFAULT_PASS;
+        }
 
         User user = userMapper.toUserRegister(registerRequest);
         user.setPassword(passwordEncoder.encode(rawPassword));
@@ -101,13 +88,15 @@ public class AuthenticationService implements UserDetailsService {
 
         user = userRepository.save(user);
 
+        user.setPassword(rawPassword);
+
 //        UserDetails userDetails = loadUserByUsername(user.getUsername());
 //        String jwt = jwtService.generateToken(userDetails);
 //
 //        user.setToken(jwt);
 //        user = userRepository.save(user);
 
-        return userMapper.toAuthResponse(user);
+        return new AuthResponse(null, userMapper.toResponse(user));
     }
 
     private String generateRandomPassword() {
@@ -139,5 +128,34 @@ public class AuthenticationService implements UserDetailsService {
         }
 
         return new String(passwordArray);
+    }
+
+    public boolean logout(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        if (token == null || token.isEmpty()) {
+            return false;
+        }
+
+        try {
+            if (!jwtService.isTokenExpired(token)) {
+                return false;
+            }
+
+            String username = jwtService.extractUsername(token);
+
+            User user = userRepository.findByUsername(username).orElse(null);
+
+            if (user != null && token.equals(user.getToken())) {
+                user.setToken(null);
+                userRepository.save(user);
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

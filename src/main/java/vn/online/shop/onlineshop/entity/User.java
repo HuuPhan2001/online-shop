@@ -28,6 +28,7 @@ public class User extends BaseModel {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
+    @Column(length = 12)
     private String phone;
 
     @Column(length = 20)
@@ -42,7 +43,7 @@ public class User extends BaseModel {
     @Column(name = "role_id")
     private Long roleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "role_id", insertable = false, updatable = false)
     private Category role;
 

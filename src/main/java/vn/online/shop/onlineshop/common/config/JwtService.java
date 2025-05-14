@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import vn.online.shop.onlineshop.service.dto.Token;
 
 import java.security.Key;
 import java.security.SecureRandom;
@@ -18,10 +19,10 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
+    private String SECRET_KEY;
 
     @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration;
+    private long timeExpireUser;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
@@ -35,12 +36,13 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public Token generateToken(String userName) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + this.timeExpireUser);
+        String tokenValue = Jwts.builder().setSubject(userName).setIssuedAt(now).setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
+        Token tokenInfo = new Token(tokenValue, expiryDate);
+        return tokenInfo;
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
@@ -62,7 +64,7 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -79,8 +81,12 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String getUserIdFromJWT(String token){
+        return extractAllClaims(token).getSubject();
     }
 
     public static void main(String[] args) {

@@ -9,6 +9,7 @@ import lombok.Setter;
 import vn.online.shop.onlineshop.common.config.PaymentStatusEnum;
 
 import java.io.Serial;
+import java.util.UUID;
 
 @Entity
 @Table(name = "orders", schema = "online_shop")
@@ -62,4 +63,9 @@ public class Order extends BaseModel{
     private String orderCode;
 
     private Integer discount;
+
+    @PrePersist
+    public void onCreate(){
+        this.orderCode = UUID.randomUUID().toString();
+    }
 }

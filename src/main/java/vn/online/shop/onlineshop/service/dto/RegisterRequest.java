@@ -14,6 +14,8 @@ import vn.online.shop.onlineshop.common.config.Constant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
+    private Long id;
+
     @NotBlank(message = Constant.EMPTY_FIELD)
     @Size(min = 2, max = Constant.NAME_LENGTH, message = "Name" + Constant.NAME_LENGTH_ERROR)
     private String username;

@@ -3,6 +3,7 @@ package vn.online.shop.onlineshop.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import vn.online.shop.onlineshop.common.config.SecurityContext;
 import vn.online.shop.onlineshop.common.config.StatusEnum;
 
 import java.io.Serial;
@@ -34,10 +35,27 @@ public abstract class BaseModel implements Serializable {
 
     @PrePersist
     public void prePersist() {
-        createAt = new Date();
-        updateAt = new Date();
-        createBy = 1L;
-        updateBy = 1L;
-        status = StatusEnum.ACTIVE;
+        this.createAt = new Date();
+        this.updateAt = new Date();
+        User user = SecurityContext.getCurrentUser();
+        if (user != null) {
+            this.createBy = user.getId();
+            this.updateBy = this.createBy;
+        } else{
+            this.createBy = 1L;
+            this.updateBy = 1L;
+        }
+        if(this.status == null){
+            this.status = StatusEnum.ACTIVE;
+        }
+    }
+
+    @PreUpdate
+    public void addUpdateByAndDate() {
+        this.updateAt = new Date();
+        User user = SecurityContext.getCurrentUser();
+        if (user != null) {
+            this.updateBy = user.getId();
+        }
     }
 }

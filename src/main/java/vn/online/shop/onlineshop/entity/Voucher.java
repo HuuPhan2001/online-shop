@@ -1,8 +1,6 @@
 package vn.online.shop.onlineshop.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "voucher", schema = "online_shop")
@@ -39,7 +38,7 @@ public class Voucher extends BaseModel{
     @Column(name = "end_date")
     private Date endDate;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToMany(mappedBy = "vouchers")
+    private List<Product> products;
 
 }

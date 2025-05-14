@@ -1,10 +1,8 @@
 package vn.online.shop.onlineshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 
@@ -20,6 +18,11 @@ public class CartItem extends BaseModel {
 
     @Column(name = "cart_id")
     private Long cartId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "cart_id", insertable = false, updatable = false)
+    private Cart cart;
 
     @Column(name = "product_id")
     private Long productId;
